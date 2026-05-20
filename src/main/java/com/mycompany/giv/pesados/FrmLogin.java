@@ -113,6 +113,9 @@ public class FrmLogin extends javax.swing.JFrame {
         // 1. Obtener los datos de las cajitas de texto
         String usuario = txtUsuario.getText();
         String clave = new String(txtClave.getPassword());
+        
+        String claveEncriptada = Seguridad.encriptarSHA256(clave);
+        
 
         // 2. Validar que no estén vacíos
         if (usuario.isEmpty() || clave.isEmpty()) {
@@ -128,7 +131,7 @@ public class FrmLogin extends javax.swing.JFrame {
             
             java.sql.PreparedStatement pst = cn.prepareStatement(sql);
             pst.setString(1, usuario);
-            pst.setString(2, clave);
+            pst.setString(2, claveEncriptada);
 
             java.sql.ResultSet rs = pst.executeQuery();
 

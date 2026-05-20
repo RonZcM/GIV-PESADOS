@@ -48,6 +48,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jDesktopPane1 = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
 
@@ -72,7 +73,12 @@ public class MdiPrincipal extends javax.swing.JFrame {
             .addGap(0, 704, Short.MAX_VALUE)
         );
 
-        jMenu1.setText("File");
+        jMenu1.setText("Mantenimiento");
+
+        jMenuItem5.setText("Usuarios");
+        jMenuItem5.addActionListener(this::jMenuItem5ActionPerformed);
+        jMenu1.add(jMenuItem5);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -97,6 +103,16 @@ public class MdiPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+// 1. Crear una instancia de tu pantalla de usuarios
+        FrmUsuarios crudUsuarios = new FrmUsuarios();
+        
+        // 2. Agregarla al fondo gris gigante (JDesktopPane)
+        jDesktopPane1.add(crudUsuarios);
+        
+        // 3. Mostrarla
+        crudUsuarios.setVisible(true);    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -115,5 +131,6 @@ public class MdiPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     // End of variables declaration//GEN-END:variables
 }

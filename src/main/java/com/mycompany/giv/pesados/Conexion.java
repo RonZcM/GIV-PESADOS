@@ -25,7 +25,7 @@ public class Conexion {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conexion = DriverManager.getConnection(URL, USUARIO, CLAVE);
-            System.out.println("¡Conexión exitosa al servidor GIV-PESADOS en Google Cloud!");
+            System.out.println("¡Conexion exitosa al servidor GIV-PESADOS en Google Cloud!");
         } catch (ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error: No se encontró el driver.\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
