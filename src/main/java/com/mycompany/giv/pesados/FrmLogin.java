@@ -140,7 +140,22 @@ public class FrmLogin extends javax.swing.JFrame {
                 
                 javax.swing.JOptionPane.showMessageDialog(this, "¡Bienvenido al sistema, " + nombre + "!\nTu rol es: " + (rol == 1 ? "Administrador" : "Vendedor"));
                 
-                // TODO: Aquí programaremos abrir el MDI Principal y guardar la sesión
+                
+                
+                
+
+// 1. Cerrar y destruir la ventana del Login
+                this.dispose();
+                
+                // 2. Crear el MDI pasándole el número de rol que vino de la base de datos
+                MdiPrincipal mdi = new MdiPrincipal(rol);
+                
+                // 3. Mostrar el MDI gigante
+                mdi.setVisible(true);
+                
+                
+                
+                
                 
             } else {
                 // Si es false, las credenciales no coinciden
