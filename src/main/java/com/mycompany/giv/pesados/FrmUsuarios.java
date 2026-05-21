@@ -91,6 +91,7 @@ public class FrmUsuarios extends javax.swing.JInternalFrame {
         btnActualizar.addActionListener(this::btnActualizarActionPerformed);
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(this::btnEliminarActionPerformed);
 
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -311,6 +312,15 @@ public class FrmUsuarios extends javax.swing.JInternalFrame {
             
             javax.swing.JOptionPane.showMessageDialog(this, "¡Usuario Registrado Exitosamente en la Nube!");
             
+            
+            
+            // 1. Volver a consultar la nube para refrescar la tabla
+            cargarTabla();
+            
+            // 2. Hacer un clic "fantasma" en el botón limpiar para vaciar las cajitas
+            btnLimpiar.doClick();
+            
+            
             // TODO: Aquí llamaremos al método para limpiar las cajas de texto y actualizar la tabla
             
         } catch (java.sql.SQLException e) {
@@ -326,24 +336,24 @@ public class FrmUsuarios extends javax.swing.JInternalFrame {
             // 2. Guardar el ID de la columna 0 en nuestra variable secreta
             idSeleccionado = Integer.parseInt(tblUsuarios.getValueAt(filaSeleccionada, 0).toString());
 
-            // 3. Subir los datos a las cajitas
+            // 3. Subir los datos a las cajitas respetando el nuevo orden
             txtNombre.setText(tblUsuarios.getValueAt(filaSeleccionada, 1).toString());
             txtApellido.setText(tblUsuarios.getValueAt(filaSeleccionada, 2).toString());
             txtUsuario.setText(tblUsuarios.getValueAt(filaSeleccionada, 3).toString());
             txtDui.setText(tblUsuarios.getValueAt(filaSeleccionada, 4).toString());
+            txtCorreo.setText(tblUsuarios.getValueAt(filaSeleccionada, 5).toString());   // <--- CORREO ARREGLADO
+            txtTelefono.setText(tblUsuarios.getValueAt(filaSeleccionada, 6).toString()); // <--- TELÉFONO ARREGLADO
             
-            // Seleccionar el rol correcto en la lista desplegable
-            String rol = tblUsuarios.getValueAt(filaSeleccionada, 5).toString();
+            // Seleccionar el rol correcto en la lista desplegable (ahora pasó a la columna 7)
+            String rol = tblUsuarios.getValueAt(filaSeleccionada, 7).toString();
             cmbRol.setSelectedItem(rol);
             
             // La contraseña la dejamos vacía por seguridad
             txtClave.setText("");
             
-            // Bloqueamos la caja de usuario para que no le cambien el "username" al actualizar
+            // Blindaje 100%: Bloqueamos la edición para que no cambien el "username"
             txtUsuario.setEditable(false);
         }
-
-// TODO add your handling code here:
     }//GEN-LAST:event_tblUsuariosMouseClicked
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -442,6 +452,49 @@ txtUsuario.setEditable(true);
 // TODO add your handling code here:
     }//GEN-LAST:event_btnActualizarActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+
+
+// 1. Validar que haya seleccionado a alguien en la tabla
+        if (idSeleccionado == 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, seleccione el usuario que desea eliminar.", "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 2. Pedir confirmación (¡Nunca se elimina sin preguntar!)
+        int confirmacion = javax.swing.JOptionPane.showConfirmDialog(this, 
+                "¿Está seguro que desea dar de baja a este usuario? Ya no podrá acceder al sistema.", 
+                "Confirmar Eliminación", 
+                javax.swing.JOptionPane.YES_NO_OPTION, 
+                javax.swing.JOptionPane.QUESTION_MESSAGE);
+
+        // Si el usuario presiona "Sí" (que equivale a 0)
+        if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                java.sql.Connection cn = Conexion.getInstancia().conectar();
+                
+                // 3. Hacer el Borrado Lógico (Cambiar estado a 0)
+                String sql = "UPDATE USUARIOS SET estado = 0 WHERE id_usuario = ?";
+                java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+                pst.setInt(1, idSeleccionado);
+                
+                pst.executeUpdate();
+                
+                javax.swing.JOptionPane.showMessageDialog(this, "Usuario dado de baja exitosamente.");
+                
+                // 4. Limpiar las cajas y refrescar la tabla para que desaparezca
+                btnLimpiar.doClick(); // Esto simula un clic en tu botón limpiar
+                cargarTabla();
+                
+            } catch (java.sql.SQLException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
@@ -477,38 +530,38 @@ txtUsuario.setEditable(true);
 
 
 // Método para mostrar los usuarios en la tabla
-    private void cargarTabla() {
-        // 1. Configurar los títulos de las columnas
+        private void cargarTabla() {
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel();
-        modelo.addColumn("ID");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Apellido");
-        modelo.addColumn("Usuario");
-        modelo.addColumn("DUI");
-        modelo.addColumn("Rol");
+        modelo.addColumn("ID");          // Columna 0
+        modelo.addColumn("Nombre");      // Columna 1
+        modelo.addColumn("Apellido");    // Columna 2
+        modelo.addColumn("Usuario");     // Columna 3
+        modelo.addColumn("DUI");         // Columna 4
+        modelo.addColumn("Correo");      // Columna 5
+        modelo.addColumn("Teléfono");    // Columna 6
+        modelo.addColumn("Rol");         // Columna 7
         
         tblUsuarios.setModel(modelo);
 
-        // 2. Traer los datos de Google Cloud
         try {
             java.sql.Connection cn = Conexion.getInstancia().conectar();
-            // Solo traemos a los usuarios activos (estado = 1)
-            String sql = "SELECT id_usuario, nombre, apellido, nombre_usuario, DUI, rol FROM USUARIOS WHERE estado = 1";
+            // Agregamos correo y telefono a la consulta SQL
+            String sql = "SELECT id_usuario, nombre, apellido, nombre_usuario, DUI, correo, telefono, rol FROM USUARIOS WHERE estado = 1";
             java.sql.Statement st = cn.createStatement();
             java.sql.ResultSet rs = st.executeQuery(sql);
 
-            // 3. Llenar la tabla fila por fila
-            String[] fila = new String[6];
+            String[] fila = new String[8]; // Ahora son 8 campos
             while (rs.next()) {
                 fila[0] = rs.getString("id_usuario");
                 fila[1] = rs.getString("nombre");
                 fila[2] = rs.getString("apellido");
                 fila[3] = rs.getString("nombre_usuario");
                 fila[4] = rs.getString("DUI");
+                fila[5] = rs.getString("correo");    // <--- Traemos correo
+                fila[6] = rs.getString("telefono");  // <--- Traemos teléfono
                 
-                // Convertir el número de rol a texto para que sea entendible
                 int rolDB = rs.getInt("rol");
-                fila[5] = (rolDB == 1) ? "Administrador" : "Vendedor";
+                fila[7] = (rolDB == 1) ? "Administrador" : "Vendedor";
                 
                 modelo.addRow(fila);
             }
