@@ -73,6 +73,8 @@ public class MdiPrincipal extends javax.swing.JFrame {
             .addGap(0, 704, Short.MAX_VALUE)
         );
 
+        getContentPane().add(jDesktopPane1, java.awt.BorderLayout.CENTER);
+
         jMenu1.setText("Mantenimiento");
 
         jMenuItem5.setText("Usuarios");
@@ -89,17 +91,6 @@ public class MdiPrincipal extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -110,7 +101,13 @@ public class MdiPrincipal extends javax.swing.JFrame {
         // 2. Agregarla al fondo gris gigante (JDesktopPane)
         jDesktopPane1.add(crudUsuarios);
         
-        // 3. Mostrarla
+        
+        
+        // Forzar el tamaño de la ventana (Ancho, Alto) para que no corte la tabla
+        crudUsuarios.setSize(950, 650);
+        
+        
+        // 4. Mostrarla
         crudUsuarios.setVisible(true);    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     /**
