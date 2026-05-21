@@ -18,6 +18,12 @@ public class MdiPrincipal extends javax.swing.JFrame {
 // Variable global para guardar el rol del usuario que entró
     private int rolUsuario;
 
+    
+    
+    
+    
+    
+    
     // Modificamos el constructor para que exija el rol al abrirse
     public MdiPrincipal(int rol) {
         initComponents();
@@ -26,9 +32,9 @@ public class MdiPrincipal extends javax.swing.JFrame {
         // Esta línea hace que el MDI se abra en pantalla completa automáticamente
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); 
         
-        // Aquí programaremos después los bloqueos de menú según el rol
+        // Bloqueo de seguridad: Si es vendedor (Rol 2), ocultamos el menú Mantenimiento
         if (this.rolUsuario == 2) { 
-            // Si es vendedor, ocultaremos cosas
+            jMenu1.setVisible(false); 
         }
     }
 
@@ -51,6 +57,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -86,7 +93,12 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenu2.setText("Edit");
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("jMenu3");
+        jMenu3.setText("Sistema");
+
+        jMenuItem6.setText("Cerrar Sesión");
+        jMenuItem6.addActionListener(this::jMenuItem6ActionPerformed);
+        jMenu3.add(jMenuItem6);
+
         jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
@@ -110,6 +122,20 @@ public class MdiPrincipal extends javax.swing.JFrame {
         // 4. Mostrarla
         crudUsuarios.setVisible(true);    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+
+
+// 1. Cierra y destruye la ventana actual (MDI)
+        this.dispose();
+        
+        // 2. Abre nuevamente la pantalla de Login
+        new FrmLogin().setVisible(true);
+
+
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -129,5 +155,6 @@ public class MdiPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     // End of variables declaration//GEN-END:variables
 }
