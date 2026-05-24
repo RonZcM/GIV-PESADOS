@@ -11,6 +11,9 @@ package com.mycompany.giv.pesados;
 public class GIVPESADOS {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        // Hacer visible el formulario de Login
+        FrmLogin login = new FrmLogin();
+        login.setVisible(true);
+        login.setLocationRelativeTo(null); // Para que salga centrado en la pantalla    
     }
-}
+ }   
