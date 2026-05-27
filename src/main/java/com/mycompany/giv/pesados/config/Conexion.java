@@ -1,4 +1,4 @@
-package com.mycompany.giv.pesados;
+package com.mycompany.giv.pesados.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

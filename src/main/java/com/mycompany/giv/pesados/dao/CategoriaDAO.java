@@ -1,6 +1,6 @@
 package com.mycompany.giv.pesados.dao;
 
-import com.mycompany.giv.pesados.Conexion;
+import com.mycompany.giv.pesados.config.Conexion;
 import com.mycompany.giv.pesados.modelos.Categoria;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

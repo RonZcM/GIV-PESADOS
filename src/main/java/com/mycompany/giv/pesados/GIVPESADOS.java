@@ -4,6 +4,8 @@
 
 package com.mycompany.giv.pesados;
 
+import com.mycompany.giv.pesados.vistas.FrmLogin;
+
 /**
  *
  * @author ElRon

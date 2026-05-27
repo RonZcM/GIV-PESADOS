@@ -4,6 +4,7 @@ public class Producto {
     private int idProducto;
     private String nombreRepuesto;
     private String numSerie;
+    private String rutaImagen;
     private String marca;
     private String descripcion;
     private float precioVenta;
@@ -13,7 +14,7 @@ public class Producto {
 
     public Producto() {}
 
-    public Producto(int idProducto, String nombreRepuesto, String numSerie, String marca, String descripcion, float precioVenta, int stockActual, int stockMinimo, int estado) {
+   public Producto(int idProducto, String nombreRepuesto, String numSerie, String marca, String descripcion, float precioVenta, int stockActual, int stockMinimo, int estado, String rutaImagen) {
         this.idProducto = idProducto;
         this.nombreRepuesto = nombreRepuesto;
         this.numSerie = numSerie;
@@ -23,6 +24,7 @@ public class Producto {
         this.stockActual = stockActual;
         this.stockMinimo = stockMinimo;
         this.estado = estado;
+        this.rutaImagen = rutaImagen;
     }
 
     public int getIdProducto() { return idProducto; }
@@ -51,4 +53,7 @@ public class Producto {
 
     public int getEstado() { return estado; }
     public void setEstado(int estado) { this.estado = estado; }
+    
+    public String getRutaImagen() { return rutaImagen; }
+    public void setRutaImagen(String rutaImagen) { this.rutaImagen = rutaImagen; }
 }

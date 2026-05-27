@@ -2,10 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.giv.pesados;
+package com.mycompany.giv.pesados.vistas;
 
+import com.mycompany.giv.pesados.vistas.FrmUsuarios;
 import com.mycompany.giv.pesados.vistas.FrmCategorias;
 import com.mycompany.giv.pesados.vistas.FrmProductos;
+import com.mycompany.giv.pesados.vistas.FrmClientes;
+
 
 /**
  *
@@ -37,7 +40,8 @@ public class MdiPrincipal extends javax.swing.JFrame {
         
         // Bloqueo de seguridad: Si es vendedor (Rol 2), ocultamos el menú Mantenimiento
         if (this.rolUsuario == 2) { 
-            jMenu1.setVisible(false); 
+            jMenu1.setVisible(false);
+            jMenu4.setVisible(false);
         }
     }
 
@@ -56,11 +60,13 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
         jDesktopPane1 = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -88,17 +94,6 @@ public class MdiPrincipal extends javax.swing.JFrame {
 
         getContentPane().add(jDesktopPane1, java.awt.BorderLayout.CENTER);
 
-        jMenu1.setText("Mantenimiento");
-
-        jMenuItem5.setText("Usuarios");
-        jMenuItem5.addActionListener(this::jMenuItem5ActionPerformed);
-        jMenu1.add(jMenuItem5);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
-
         jMenu3.setText("Sistema");
 
         jMenuItem6.setText("Cerrar Sesión");
@@ -106,6 +101,26 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenu3.add(jMenuItem6);
 
         jMenuBar1.add(jMenu3);
+
+        jMenu5.setText("Comercial");
+
+        jMenuItem9.setText("Clientes");
+        jMenuItem9.addActionListener(this::jMenuItem9ActionPerformed);
+        jMenu5.add(jMenuItem9);
+
+        jMenuItem10.setText("Ventas");
+        jMenuItem10.addActionListener(this::jMenuItem10ActionPerformed);
+        jMenu5.add(jMenuItem10);
+
+        jMenuBar1.add(jMenu5);
+
+        jMenu1.setText("Mantenimiento");
+
+        jMenuItem5.setText("Usuarios");
+        jMenuItem5.addActionListener(this::jMenuItem5ActionPerformed);
+        jMenu1.add(jMenuItem5);
+
+        jMenuBar1.add(jMenu1);
 
         jMenu4.setText("administracion");
 
@@ -170,6 +185,21 @@ public class MdiPrincipal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // TODO add your handling code here:
+        FrmClientes clientes = new FrmClientes(this.rolUsuario);
+        clientes.setVisible(true);
+        jDesktopPane1.add(clientes);
+                                      
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // TODO add your handling code here:
+        FrmVentas ventas = new FrmVentas(this.rolUsuario);
+        ventas.setVisible(true);
+        jDesktopPane1.add(ventas);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -181,11 +211,12 @@ public class MdiPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -193,5 +224,6 @@ public class MdiPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     // End of variables declaration//GEN-END:variables
 }
