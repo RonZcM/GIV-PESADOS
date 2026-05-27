@@ -2,7 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.giv.pesados;
+package com.mycompany.giv.pesados.vistas;
+
+import com.mycompany.giv.pesados.config.Conexion;
+import com.mycompany.giv.pesados.config.Seguridad;
 
 /**
  *
@@ -180,10 +183,12 @@ public class FrmLogin extends javax.swing.JFrame {
                 this.dispose();
                 
                 // 2. Crear el MDI pasándole el número de rol que vino de la base de datos
+               
                 MdiPrincipal mdi = new MdiPrincipal(rol);
                 
                 // 3. Mostrar el MDI gigante
                 mdi.setVisible(true);
+                
                 
                 
                 
