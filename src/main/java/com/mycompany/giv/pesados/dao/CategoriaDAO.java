@@ -96,6 +96,7 @@ public class CategoriaDAO {
         }
         return ids;
     }
+
     
     // 6. MÉTODO PARA VERIFICAR SI EL NOMBRE YA EXISTE
     public boolean existeCategoria(String nombre, int idIgnorar) {
@@ -116,5 +117,37 @@ public class CategoriaDAO {
             System.err.println("Error al verificar existencia: " + e.getMessage());
         }
         return false;
+    }
+
+    // =========================================================
+    // MÉTODO PARA LLENAR EL COMBOBOX DEL CATÁLOGO
+    // =========================================================
+    public List<String> obtenerNombresCategorias() {
+        List<String> lista = new ArrayList<>();
+        
+        // Agregamos la opción por defecto siempre al inicio
+        lista.add("Todos");
+        
+        // Consulta para traer solo el nombre de las categorías (asumiendo que tu tabla se llama CATEGORIAS)
+        String sql = "SELECT nombre_categoria FROM CATEGORIAS"; 
+        
+        // Si tus categorías tienen estado (activo/inactivo), usa esta en su lugar:
+        // String sql = "SELECT nombre_categoria FROM CATEGORIAS WHERE estado = 1";
+        
+        try {
+            java.sql.Connection con = com.mycompany.giv.pesados.config.Conexion.getInstancia().conectar();
+            java.sql.PreparedStatement ps = con.prepareStatement(sql);
+            java.sql.ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                // Agregamos cada nombre que encuentre en la DB a la lista
+                lista.add(rs.getString("nombre_categoria"));
+            }
+        } catch (java.sql.SQLException e) {
+            System.out.println("Error al obtener categorías para el ComboBox: " + e.getMessage());
+        }
+        
+        return lista;
+
     }
 }

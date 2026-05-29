@@ -177,19 +177,19 @@ public class ProductoDAO {
         }
     }
     
-    // =========================================================
+    
+    
+   // =========================================================
     // 5. NUEVO MÉTODO PARA FILTRAR CATÁLOGO VISUAL (POR CATEGORÍA)
     // =========================================================
     public List<Producto> filtrarCatalogo(String busqueda, String categoria) {
         List<Producto> lista = new ArrayList<>();
         
-        // JOIN con la tabla intermedia y la tabla de categorías
         String sql = "SELECT DISTINCT p.* FROM PRODUCTOS p " +
                      "LEFT JOIN CATEGORIA_PRODUCTO cp ON p.id_producto = cp.id_producto " +
                      "LEFT JOIN CATEGORIAS c ON cp.id_categoria = c.id_categoria " +
                      "WHERE p.estado = 1 AND (p.nombre_repuesto LIKE ? OR p.num_serie LIKE ?) ";
         
-        // Si el usuario no eligió "Todos", agregamos el filtro
         if (!categoria.equals("Todos")) {
             sql += " AND c.nombre_categoria = ?";
         }
@@ -213,12 +213,11 @@ public class ProductoDAO {
                 p.setNombreRepuesto(rs.getString("nombre_repuesto"));
                 p.setNumSerie(rs.getString("num_serie"));
                 p.setMarca(rs.getString("marca"));
+                p.setDescripcion(rs.getString("descripcion")); // ¡LÍNEA AGREGADA!
                 p.setPrecioVenta(rs.getFloat("precio_venta"));
                 p.setStockActual(rs.getInt("stock_actual"));
                 p.setStockMinimo(rs.getInt("stock_minimo"));
                 p.setEstado(rs.getInt("estado"));
-                
-                // Capturamos la ruta de la imagen
                 p.setRutaImagen(rs.getString("ruta_imagen")); 
                 
                 lista.add(p);
@@ -228,4 +227,6 @@ public class ProductoDAO {
         }
         return lista;
     }
+    
+    
 }
