@@ -14,7 +14,7 @@ public class ProductoDAO {
 
     // 1. MÉTODO PARA REGISTRAR CON TRANSACCIÓN
     public boolean registrarProductoConCategorias(Producto producto, List<Integer> idCategorias) {
-        String sqlProducto = "INSERT INTO PRODUCTOS (nombre_repuesto, num_serie, marca, descripcion, precio_venta, stock_actual, stock_minimo, estado) VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
+        String sqlProducto = "INSERT INTO PRODUCTOS (nombre_repuesto, num_serie, marca, descripcion, precio_venta, stock_actual, stock_minimo, ruta_imagen, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)";
         String sqlIntermedia = "INSERT INTO CATEGORIA_PRODUCTO (id_producto, id_categoria) VALUES (?, ?)";
         
         Connection con = null;
@@ -30,6 +30,7 @@ public class ProductoDAO {
             pstProd.setFloat(5, producto.getPrecioVenta());
             pstProd.setInt(6, producto.getStockActual());
             pstProd.setInt(7, producto.getStockMinimo());
+            pstProd.setString(8, producto.getRutaImagen());
             pstProd.executeUpdate();
 
             ResultSet rs = pstProd.getGeneratedKeys();
@@ -89,6 +90,8 @@ public class ProductoDAO {
                 p.setStockActual(rs.getInt("stock_actual"));
                 p.setStockMinimo(rs.getInt("stock_minimo"));
                 p.setEstado(rs.getInt("estado"));
+                p.setDescripcion(rs.getString("descripcion")); 
+                p.setRutaImagen(rs.getString("ruta_imagen"));
                 lista.add(p);
             }
         } catch (SQLException e) {
@@ -99,7 +102,7 @@ public class ProductoDAO {
 
     // 3. MÉTODO PARA ACTUALIZAR (UPDATE) CON TRANSACCIÓN
     public boolean actualizarProductoConCategorias(Producto producto, List<Integer> idCategorias) {
-        String sqlProducto = "UPDATE PRODUCTOS SET nombre_repuesto=?, num_serie=?, marca=?, descripcion=?, precio_venta=?, stock_actual=?, stock_minimo=? WHERE id_producto=?";
+        String sqlProducto = "UPDATE PRODUCTOS SET nombre_repuesto=?, num_serie=?, marca=?, descripcion=?, precio_venta=?, stock_actual=?, stock_minimo=?, ruta_imagen=? WHERE id_producto=?";
         String sqlDeleteCategorias = "DELETE FROM CATEGORIA_PRODUCTO WHERE id_producto = ?";
         String sqlInsertCategorias = "INSERT INTO CATEGORIA_PRODUCTO (id_producto, id_categoria) VALUES (?, ?)";
         
@@ -117,7 +120,8 @@ public class ProductoDAO {
             pstProd.setFloat(5, producto.getPrecioVenta());
             pstProd.setInt(6, producto.getStockActual());
             pstProd.setInt(7, producto.getStockMinimo());
-            pstProd.setInt(8, producto.getIdProducto());
+            pstProd.setString(8, producto.getRutaImagen());
+            pstProd.setInt(9, producto.getIdProducto());
             pstProd.executeUpdate();
 
             // 2. Limpiar las categorías viejas asociadas a este producto

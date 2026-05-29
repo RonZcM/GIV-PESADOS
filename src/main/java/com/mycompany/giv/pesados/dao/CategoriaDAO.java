@@ -78,4 +78,22 @@ public class CategoriaDAO {
             return false;
         }
     }
+    
+    // 5. MÉTODO PARA OBTENER CATEGORIAS POR PRODUCTO
+    public List<Integer> obtenerIdCategoriasPorProducto(int idProducto) {
+        List<Integer> ids = new ArrayList<>();
+        String sql = "SELECT id_categoria FROM CATEGORIA_PRODUCTO WHERE id_producto = ?";
+        try {
+            java.sql.Connection con = com.mycompany.giv.pesados.config.Conexion.getInstancia().conectar();
+            java.sql.PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idProducto);
+            java.sql.ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ids.add(rs.getInt("id_categoria"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error al obtener categorías: " + e.getMessage());
+        }
+        return ids;
+    }
 }

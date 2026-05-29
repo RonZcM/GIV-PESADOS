@@ -20,6 +20,8 @@ public class FrmVentas extends javax.swing.JInternalFrame {
     private int idProductoTemp = 0; 
     // Variable para guardar el ID del cliente que hará la compra
     private int idClienteTemp = 0;
+    // NUEVA VARIABLE: Guardará el descuento según el tipo de cliente
+    private double porcentajeDescuentoVIP = 0.0;
     
     
     // Modelo de la tabla (el carrito en memoria)
@@ -75,6 +77,7 @@ public class FrmVentas extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         CbMetodoPago = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
+        lblCliente = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -120,14 +123,16 @@ public class FrmVentas extends javax.swing.JInternalFrame {
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel8.setText("Datos de la Venta");
 
+        lblCliente.setText("Descuento: N/A");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,18 +148,20 @@ public class FrmVentas extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(TxtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(280, 280, 280))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(46, 46, 46)
-                                .addComponent(CbMetodoPago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(TxtDuiCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(BtnBuscarCliente)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel5)
+                                    .addGap(46, 46, 46)
+                                    .addComponent(CbMetodoPago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(TxtDuiCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(BtnBuscarCliente)))
+                            .addComponent(lblCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -179,7 +186,9 @@ public class FrmVentas extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(CbMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblCliente)
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
@@ -287,6 +296,7 @@ public class FrmVentas extends javax.swing.JInternalFrame {
         TxtTotalPagar.setEditable(false);
 
         BtnGenerarVenta.setText("Generar Venta");
+        BtnGenerarVenta.addActionListener(this::BtnGenerarVentaActionPerformed);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -397,11 +407,23 @@ public class FrmVentas extends javax.swing.JInternalFrame {
             // ¡CRUCIAL! Guardamos el ID del cliente para cuando le demos al botón "Procesar Venta"
             idClienteTemp = cl.getIdCliente(); 
             
+            // --- NUEVA LÓGICA VIP ---
+            // Asumiendo que agregaste getTipoCliente() a tu modelo Cliente
+            String tipo = cl.getTipoCliente(); 
+            if (tipo != null && tipo.equalsIgnoreCase("VIP")) {
+                porcentajeDescuentoVIP = 0.10; // 10% de descuento
+                this.lblCliente.setText("Descuento: VIP -10%");
+            } else {
+                porcentajeDescuentoVIP = 0.00; // Cliente normal
+            }
+            // ------------------------
+            
         } else {
             // Si no hay resultados (o si el cliente está inactivo y es vendedor)
             javax.swing.JOptionPane.showMessageDialog(null, "Cliente no encontrado o inactivo. Verifique el DUI.");
             TxtNombreCliente.setText("");
             idClienteTemp = 0;
+            porcentajeDescuentoVIP = 0.00; // Reiniciamos por si acaso
         }
     }//GEN-LAST:event_BtnBuscarClienteActionPerformed
 
@@ -438,36 +460,76 @@ public class FrmVentas extends javax.swing.JInternalFrame {
         }
 
         try {
-            int cantidad = Integer.parseInt(TxtCantidad.getText());
+            int cantidadNueva = Integer.parseInt(TxtCantidad.getText());
             int stockDisponible = Integer.parseInt(TxtStock.getText());
             double precio = Double.parseDouble(TxtPrecioUnitario.getText());
+            double descuento = 0.0; // Asumimos 0 si no hay campo de descuento
             
-            // Asumimos 0 si el campo de descuento no existe o está vacío
-            double descuento = 0.0; 
-            
-            // 2. Validación de Stock [cite: 17, 34]
-            if (cantidad > stockDisponible) {
-                JOptionPane.showMessageDialog(null, "Stock insuficiente. Solo hay " + stockDisponible + " unidades disponibles.");
-                return;
-            }
-            if (cantidad <= 0) {
+            if (cantidadNueva <= 0) {
                 JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor a cero.");
                 return;
             }
 
-            // 3. Calculamos el subtotal de esta línea
-            double subtotal = (cantidad * precio) - descuento;
+            // 2. BUSCAMOS SI EL PRODUCTO YA ESTÁ EN EL CARRITO
+            int filaExistente = -1;
+            int cantidadPreviaEnCarrito = 0;
 
-            // 4. Preparamos la fila y la agregamos al JTable (Carrito)
-            Object[] fila = new Object[6];
-            fila[0] = idProductoTemp;
-            fila[1] = TxtNombreProducto.getText();
-            fila[2] = cantidad;
-            fila[3] = precio;
-            fila[4] = descuento;
-            fila[5] = subtotal;
+            for (int i = 0; i < modeloVenta.getRowCount(); i++) {
+                int idProductoEnTabla = Integer.parseInt(modeloVenta.getValueAt(i, 0).toString());
+                
+                if (idProductoEnTabla == idProductoTemp) {
+                    filaExistente = i; // Guardamos el índice de la fila
+                    cantidadPreviaEnCarrito = Integer.parseInt(modeloVenta.getValueAt(i, 2).toString());
+                    break;
+                }
+            }
 
-            modeloVenta.addRow(fila);
+            // 3. NUEVA VALIDACIÓN DE STOCK (Cantidad Anterior + Cantidad Nueva)
+            int cantidadTotalProyectada = cantidadPreviaEnCarrito + cantidadNueva;
+
+            if (cantidadTotalProyectada > stockDisponible) {
+                JOptionPane.showMessageDialog(null, "Stock insuficiente.\nYa tienes " + cantidadPreviaEnCarrito + 
+                                              " unidades de este repuesto en el carrito.\nSolo puedes agregar " + 
+                                              (stockDisponible - cantidadPreviaEnCarrito) + " más.");
+                return;
+            }
+
+            // 4. AGREGAR O ACTUALIZAR FILA
+            if (filaExistente >= 0) {
+                // El producto ya existe: Actualizamos la cantidad
+                modeloVenta.setValueAt(cantidadTotalProyectada, filaExistente, 2);
+                
+                // --- NUEVA MATEMÁTICA CON DESCUENTO ---
+                double subtotalBruto = cantidadTotalProyectada * precio;
+                double descuentoCalculado = subtotalBruto * porcentajeDescuentoVIP;
+                double nuevoSubtotal = subtotalBruto - descuentoCalculado;
+                
+                String descFormateado = String.format(java.util.Locale.US, "%.2f", descuentoCalculado);
+                String subtotalFormateado = String.format(java.util.Locale.US, "%.2f", nuevoSubtotal);
+                
+                modeloVenta.setValueAt(descFormateado, filaExistente, 4); // Actualizamos la celda de descuento
+                modeloVenta.setValueAt(subtotalFormateado, filaExistente, 5); // Actualizamos la celda de subtotal
+                
+            } else {
+                // El producto es nuevo: Calculamos desde cero
+                double subtotalBruto = cantidadNueva * precio;
+                double descuentoCalculado = subtotalBruto * porcentajeDescuentoVIP;
+                double subtotalNeto = subtotalBruto - descuentoCalculado;
+                
+                String precioFormat = String.format(java.util.Locale.US, "%.2f", precio);
+                String descFormat = String.format(java.util.Locale.US, "%.2f", descuentoCalculado);
+                String subtotalFormat = String.format(java.util.Locale.US, "%.2f", subtotalNeto);
+                
+                Object[] fila = new Object[6];
+                fila[0] = idProductoTemp;
+                fila[1] = TxtNombreProducto.getText();
+                fila[2] = cantidadNueva;
+                fila[3] = precioFormat;
+                fila[4] = descFormat; // Aquí ya va el dinero real descontado
+                fila[5] = subtotalFormat; // El dinero neto final
+
+                modeloVenta.addRow(fila);
+            }
 
             // 5. Limpiamos los campos para el siguiente producto
             idProductoTemp = 0;
@@ -483,6 +545,92 @@ public class FrmVentas extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Error: Ingrese valores numéricos válidos en Cantidad y Precio.");
         }
     }//GEN-LAST:event_BtnAgregarCarritoActionPerformed
+
+    private void BtnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGenerarVentaActionPerformed
+        
+        // 1. Validaciones iniciales de seguridad
+        if (idClienteTemp == 0) {
+            JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar un cliente antes de procesar la venta.");
+            return;
+        }
+
+        if (TbDetalleVenta.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "El carrito de compras está vacío. Agregue repuestos para continuar.");
+            return;
+        }
+
+        try {
+            // 2. Preparar el objeto de la cabecera (Venta)
+            com.mycompany.giv.pesados.modelos.Venta nuevaVenta = new com.mycompany.giv.pesados.modelos.Venta();
+            
+            // Asignamos la fecha y hora actual del sistema
+            nuevaVenta.setFechaVenta(new java.sql.Timestamp(System.currentTimeMillis()));
+            // Convertimos el total de la caja de texto a double
+            nuevaVenta.setTotalPagar(Double.parseDouble(TxtTotalPagar.getText().replace(",", ".")));
+            nuevaVenta.setTipoComprobante(CbTipoComprobante.getSelectedItem().toString());
+            nuevaVenta.setMetodoPago(CbMetodoPago.getSelectedItem().toString());
+            nuevaVenta.setEstado(1); // 1 = Venta Activa
+            nuevaVenta.setIdCliente(idClienteTemp); 
+            
+            // OJO: Aquí deberías poner el ID del usuario real que inició sesión. 
+            // Por ahora uso la variable rolUsuario que ya tienes en el formulario, 
+            // pero asegúrate de pasar el idUsuario exacto desde el Login en el futuro.
+            nuevaVenta.setIdUsuario(this.rolUsuario); 
+
+            // 3. Preparar la lista de detalles recorriendo el JTable
+            java.util.List<com.mycompany.giv.pesados.modelos.DetalleVenta> listaDetalles = new java.util.ArrayList<>();
+            
+            for (int i = 0; i < TbDetalleVenta.getRowCount(); i++) {
+                com.mycompany.giv.pesados.modelos.DetalleVenta detalle = new com.mycompany.giv.pesados.modelos.DetalleVenta();
+                
+                // Extraemos los datos de las columnas basándonos en cómo las llenaste en BtnAgregarCarrito
+                detalle.setIdProducto(Integer.parseInt(TbDetalleVenta.getValueAt(i, 0).toString()));
+                detalle.setCantidad(Integer.parseInt(TbDetalleVenta.getValueAt(i, 2).toString()));
+                detalle.setPrecioUnitario(Double.parseDouble(TbDetalleVenta.getValueAt(i, 3).toString()));
+                detalle.setDescuento(Double.parseDouble(TbDetalleVenta.getValueAt(i, 4).toString()));
+                detalle.setSubtotal(Double.parseDouble(TbDetalleVenta.getValueAt(i, 5).toString()));
+                
+                listaDetalles.add(detalle);
+            }
+
+            // 4. Mandamos todo al Motor Transaccional (DAO)
+            com.mycompany.giv.pesados.dao.VentaDAO ventaDao = new com.mycompany.giv.pesados.dao.VentaDAO();
+            int idVentaGenerada = ventaDao.registrarVenta(nuevaVenta, listaDetalles);
+
+            // 5. Evaluamos el resultado de la transacción
+            if (idVentaGenerada > 0) {
+                // ¡AQUÍ ESTÁ EL TRUCO, MAJE! Le asignamos el ID real de la DB al objeto cabecera
+                nuevaVenta.setIdVenta(idVentaGenerada);
+                
+                JOptionPane.showMessageDialog(this, "¡Transacción Exitosa! Venta N° " + idVentaGenerada + " registrada correctamente en GIV-PESADOS.");
+                
+                // Instanciamos el generador con los parches aplicados
+                com.mycompany.giv.pesados.config.GeneradorDocumentos docs = new com.mycompany.giv.pesados.config.GeneradorDocumentos();
+                
+                // 1. Exporta el JSON (ahora saldrá con el ID 8, 9, etc.)
+                docs.exportarVentaJSON(nuevaVenta, listaDetalles);
+                
+                // 2. Genera el PDF usando el stream de recursos de Maven
+                docs.generarComprobantePDF(idVentaGenerada, CbTipoComprobante.getSelectedItem().toString());
+
+                // 6. Limpiamos el formulario para el siguiente cliente
+                idClienteTemp = 0;
+                TxtDuiCliente.setText("");
+                TxtNombreCliente.setText("");
+                TxtTotalPagar.setText("");
+                modeloVenta.setRowCount(0); 
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Error crítico: La venta fue cancelada mediante Rollback.");
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error de formato en los números calculados: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage());
+        }
+        
+    }//GEN-LAST:event_BtnGenerarVentaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -518,5 +666,6 @@ public class FrmVentas extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblCliente;
     // End of variables declaration//GEN-END:variables
 }

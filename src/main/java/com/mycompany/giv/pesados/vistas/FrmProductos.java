@@ -4,6 +4,11 @@
  */
 package com.mycompany.giv.pesados.vistas;
 
+import java.awt.Image;
+import java.io.File;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import com.mycompany.giv.pesados.dao.CategoriaDAO;
 import com.mycompany.giv.pesados.dao.ProductoDAO;
 import com.mycompany.giv.pesados.modelos.Categoria;
@@ -39,6 +44,29 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         cargarTabla();
     }
     
+    private void mostrarImagen(String ruta) {
+        if (ruta != null && !ruta.trim().isEmpty()) {
+            File archivo = new File(ruta);
+            if (archivo.exists()) {
+                ImageIcon iconoOriginal = new ImageIcon(ruta);
+                // Ajustamos la imagen al ancho y alto del lblImage
+                Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(lblImage.getWidth(), lblImage.getHeight(), Image.SCALE_SMOOTH);
+                lblImage.setIcon(new ImageIcon(imagenEscalada));
+                return; // Si todo salió bien, cortamos la ejecución aquí
+            } 
+        }
+        
+        // Si la ruta está vacía, es nula o el archivo no existe, cargamos el default
+        java.net.URL imgUrl = getClass().getResource("/img/default.jpg");
+        if (imgUrl != null) {
+            ImageIcon iconoDefault = new ImageIcon(imgUrl);
+            Image imagenEscalada = iconoDefault.getImage().getScaledInstance(lblImage.getWidth(), lblImage.getHeight(), Image.SCALE_SMOOTH);
+            lblImage.setIcon(new ImageIcon(imagenEscalada));
+        } else {
+            lblImage.setIcon(null);
+        }
+    }
+    
     private void cargarCategorias() {
         DefaultListModel<Categoria> modeloLista = new DefaultListModel<>();
         List<Categoria> categorias = categoriaDAO.listarCategoriasActivas();
@@ -58,10 +86,12 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         modeloTabla.addColumn("Marca");
         modeloTabla.addColumn("Precio ($)");
         modeloTabla.addColumn("Stock");
-        modeloTabla.addColumn("Mínimo");
+        modeloTabla.addColumn("Mínimo"); // 
+        modeloTabla.addColumn("Ruta Imagen"); // Columna 7
+        modeloTabla.addColumn("Descripción"); // Columna 8 (Nueva)
         
         List<Producto> lista = productoDAO.listarProductosActivos();
-        Object[] fila = new Object[7];
+        Object[] fila = new Object[9];
         
         for (Producto p : lista) {
             fila[0] = p.getIdProducto();
@@ -71,6 +101,8 @@ public class FrmProductos extends javax.swing.JInternalFrame {
             fila[4] = p.getPrecioVenta();
             fila[5] = p.getStockActual();
             fila[6] = p.getStockMinimo();
+            fila[7] = p.getRutaImagen();
+            fila[8] = p.getDescripcion();
             modeloTabla.addRow(fila);
         }
         
@@ -118,6 +150,10 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         txaDescripcion = new javax.swing.JTextArea();
         txtNombreRepuesto = new javax.swing.JTextField();
+        txtImage = new javax.swing.JTextField();
+        btnSeleccion = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        lblImage = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -127,7 +163,7 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         panel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("buscador:");
+        jLabel1.setText("Buscar:");
         panel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, -1, -1));
 
         txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -138,11 +174,11 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         panel2.add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 20, 190, -1));
 
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Nobre Repuesto:");
+        jLabel2.setText("Nombre del Repuesto:");
         panel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
 
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("numero de serie:");
+        jLabel3.setText("Número de serie:");
         panel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
         panel2.add(txtNumSerie, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, 170, -1));
 
@@ -153,21 +189,21 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         panel2.add(txtMarca, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 150, 100, -1));
 
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Descripcion:");
+        jLabel5.setText("Descripción:");
         panel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, -1, -1));
 
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel6.setText("Precio venta:");
-        panel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
+        jLabel6.setText("Imagen:");
+        panel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, -1, -1));
         panel2.add(txtPrecioVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 20, 90, -1));
 
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel7.setText("Stok actual:");
+        jLabel7.setText("Stock actual:");
         panel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 60, -1, -1));
         panel2.add(txtStockActual, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, 90, -1));
 
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Stck minimo:");
+        jLabel8.setText("Stock mínimo:");
         panel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 100, -1, 20));
         panel2.add(txtStockMinimo, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 100, 90, -1));
 
@@ -209,7 +245,7 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblProductos);
 
-        panel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 520, 220));
+        panel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 810, 220));
 
         txaDescripcion.setColumns(20);
         txaDescripcion.setRows(5);
@@ -217,16 +253,29 @@ public class FrmProductos extends javax.swing.JInternalFrame {
 
         panel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, 190, 90));
         panel2.add(txtNombreRepuesto, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 170, -1));
+        panel2.add(txtImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 40, 150, -1));
+
+        btnSeleccion.setText("Seleccionar...");
+        btnSeleccion.addActionListener(this::btnSeleccionActionPerformed);
+        panel2.add(btnSeleccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 40, -1, -1));
+
+        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel9.setText("Precio venta:");
+        panel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
+
+        lblImage.setForeground(new java.awt.Color(0, 0, 0));
+        lblImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/default.jpg"))); // NOI18N
+        panel2.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 100, 260, 190));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panel2, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel2, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
+            .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -288,22 +337,42 @@ public class FrmProductos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
-        // TODO add your handling code here:
-        int fila = tblProductos.getSelectedRow();
-        if (fila >= 0) {
-            // Convertimos el índice visual al índice del modelo (por si la tabla está filtrada)
-            int filaModelo = tblProductos.convertRowIndexToModel(fila);
+        int filaVista = tblProductos.getSelectedRow();
+        if (filaVista >= 0) {
+            int filaModelo = tblProductos.convertRowIndexToModel(filaVista);
             
+            // 1. Extraer los datos básicos
             idProductoSeleccionado = Integer.parseInt(modeloTabla.getValueAt(filaModelo, 0).toString());
-            txtNombreRepuesto.setText(modeloTabla.getValueAt(filaModelo, 1).toString());
-            txtNumSerie.setText(modeloTabla.getValueAt(filaModelo, 2).toString());
-            txtMarca.setText(modeloTabla.getValueAt(filaModelo, 3).toString());
-            txtPrecioVenta.setText(modeloTabla.getValueAt(filaModelo, 4).toString());
-            txtStockActual.setText(modeloTabla.getValueAt(filaModelo, 5).toString());
-            txtStockMinimo.setText(modeloTabla.getValueAt(filaModelo, 6).toString());
+            txtNombreRepuesto.setText(modeloTabla.getValueAt(filaModelo, 1) != null ? modeloTabla.getValueAt(filaModelo, 1).toString() : "");
+            txtNumSerie.setText(modeloTabla.getValueAt(filaModelo, 2) != null ? modeloTabla.getValueAt(filaModelo, 2).toString() : "");
+            txtMarca.setText(modeloTabla.getValueAt(filaModelo, 3) != null ? modeloTabla.getValueAt(filaModelo, 3).toString() : "");
+            txtPrecioVenta.setText(modeloTabla.getValueAt(filaModelo, 4) != null ? modeloTabla.getValueAt(filaModelo, 4).toString() : "");
+            txtStockActual.setText(modeloTabla.getValueAt(filaModelo, 5) != null ? modeloTabla.getValueAt(filaModelo, 5).toString() : "");
+            txtStockMinimo.setText(modeloTabla.getValueAt(filaModelo, 6) != null ? modeloTabla.getValueAt(filaModelo, 6).toString() : "");
             
-            // Nota: Para mantener la vista ligera, no cargamos la descripción ni las 
-            // categorías seleccionadas al hacer clic. Se puede agregar si el cliente lo exige.
+            // 2. Extraer Imagen y Descripción (Las columnas que agregamos)
+            String rutaImg = modeloTabla.getValueAt(filaModelo, 7) != null ? modeloTabla.getValueAt(filaModelo, 7).toString() : "";
+            txtImage.setText(rutaImg);
+            mostrarImagen(rutaImg); // Llama a tu método mágico
+            
+            String descripcion = modeloTabla.getValueAt(filaModelo, 8) != null ? modeloTabla.getValueAt(filaModelo, 8).toString() : "";
+            txaDescripcion.setText(descripcion);
+
+            // 3. Seleccionar las categorías en el JList
+            List<Integer> idsCategorias = categoriaDAO.obtenerIdCategoriasPorProducto(idProductoSeleccionado);
+            List<Integer> indicesSeleccionados = new ArrayList<>();
+            
+            // Recorremos el modelo visual del JList para ver cuáles coinciden con la BD
+            for (int i = 0; i < lstCategorias.getModel().getSize(); i++) {
+                Categoria cat = lstCategorias.getModel().getElementAt(i);
+                if (idsCategorias.contains(cat.getIdCategoria())) {
+                    indicesSeleccionados.add(i);
+                }
+            }
+            
+            // Convertimos la lista de Integer a un int[] porque así lo pide Java Swing
+            int[] arrIndices = indicesSeleccionados.stream().mapToInt(i -> i).toArray();
+            lstCategorias.setSelectedIndices(arrIndices);
         }
     }//GEN-LAST:event_tblProductosMouseClicked
 
@@ -324,6 +393,21 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         limpiarCampos();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
+    private void btnSeleccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Seleccionar Imagen del Repuesto");
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (JPG, PNG, GIF)", "jpg", "jpeg", "png", "gif");
+        fileChooser.setFileFilter(filtro);
+
+        int respuesta = fileChooser.showOpenDialog(this);
+        if (respuesta == JFileChooser.APPROVE_OPTION) {
+            String rutaSeleccionada = fileChooser.getSelectedFile().getAbsolutePath();
+            txtImage.setText(rutaSeleccionada);
+            mostrarImagen(rutaSeleccionada);
+        }
+    }//GEN-LAST:event_btnSeleccionActionPerformed
+
 private void limpiarCampos() {
         txtNombreRepuesto.setText("");
         txtNumSerie.setText("");
@@ -335,6 +419,16 @@ private void limpiarCampos() {
         txtBuscar.setText("");
         lstCategorias.clearSelection();
         idProductoSeleccionado = 0;
+        txtImage.setText("");
+        java.net.URL imgUrl = getClass().getResource("/img/default.jpg");
+        if (imgUrl != null) {
+            ImageIcon iconoDefault = new ImageIcon(imgUrl);
+            Image imagenEscalada = iconoDefault.getImage().getScaledInstance(lblImage.getWidth(), lblImage.getHeight(), Image.SCALE_SMOOTH);
+            lblImage.setIcon(new ImageIcon(imagenEscalada));
+        } else {
+            lblImage.setIcon(null);
+        }
+        
         if(sorter != null) sorter.setRowFilter(null); // Quitar filtro
     }
 private Producto crearProductoDesdeFormulario() {
@@ -346,6 +440,7 @@ private Producto crearProductoDesdeFormulario() {
         p.setPrecioVenta(Float.parseFloat(txtPrecioVenta.getText().trim()));
         p.setStockActual(Integer.parseInt(txtStockActual.getText().trim()));
         p.setStockMinimo(Integer.parseInt(txtStockMinimo.getText().trim()));
+        p.setRutaImagen(txtImage.getText().trim());
         return p;
     }
 private List<Integer> obtenerCategoriasSeleccionadas() {
@@ -357,6 +452,10 @@ private List<Integer> obtenerCategoriasSeleccionadas() {
         return ids;
     }
 private boolean validarCampos() {
+        if (txtImage.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una imagen para el repuesto.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
         if (txtNombreRepuesto.getText().trim().isEmpty() || txtPrecioVenta.getText().trim().isEmpty() || 
             txtStockActual.getText().trim().isEmpty() || txtStockMinimo.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, llene los campos obligatorios (Nombre, Precio y Stocks).", "Validación", JOptionPane.WARNING_MESSAGE);
@@ -392,6 +491,7 @@ private boolean validarCampos() {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnSeleccion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -400,14 +500,17 @@ private boolean validarCampos() {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblImage;
     private javax.swing.JList<Categoria> lstCategorias;
     private javax.swing.JPanel panel2;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextArea txaDescripcion;
     private javax.swing.JTextField txtBuscar;
+    private javax.swing.JTextField txtImage;
     private javax.swing.JTextField txtMarca;
     private javax.swing.JTextField txtNombreRepuesto;
     private javax.swing.JTextField txtNumSerie;
