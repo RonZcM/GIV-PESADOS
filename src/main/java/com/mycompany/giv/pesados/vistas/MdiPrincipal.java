@@ -74,6 +74,86 @@ public class MdiPrincipal extends javax.swing.JFrame {
             jMenu1.setVisible(false);
             jMenu4.setVisible(false);
         }
+        
+        
+        // ==========================================================
+        // MEJORA UI 1: FONDO DE MARCA DE AGUA CENTRADO DINÁMICAMENTE
+        // ==========================================================
+        // 1. Removemos el DesktopPane original que generó NetBeans
+        this.remove(jDesktopPane1);
+        
+        // 2. Creamos uno nuevo sobreescribiendo su método de pintura
+        jDesktopPane1 = new javax.swing.JDesktopPane() {
+            java.awt.Image logoAgua = new javax.swing.ImageIcon(getClass().getResource("/GIV-PESADOS.png")).getImage();
+            
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                // Pintamos el fondo azul marino oscuro
+                g.setColor(new java.awt.Color(0, 52, 89));
+                g.fillRect(0, 0, getWidth(), getHeight());
+                
+                // Dibujamos el logo exactamente en el centro
+                if (logoAgua != null) {
+                    int x = (getWidth() - logoAgua.getWidth(null)) / 2;
+                    int y = (getHeight() - logoAgua.getHeight(null)) / 2;
+                    g.drawImage(logoAgua, x, y, this);
+                }
+            }
+        };
+        // 3. Lo volvemos a agregar al centro de la ventana
+        this.add(jDesktopPane1, java.awt.BorderLayout.CENTER);
+
+        // ==========================================================
+        // MEJORA UI 2: BARRA DE ESTADO INFERIOR CON RELOJ EN VIVO
+        // ==========================================================
+        javax.swing.JPanel pnlStatusBar = new javax.swing.JPanel(new java.awt.BorderLayout());
+        pnlStatusBar.setBackground(new java.awt.Color(230, 230, 230)); // Gris claro corporativo
+        pnlStatusBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 10, 3, 10));
+
+        // Etiqueta Izquierda: Info del Sistema y Usuario
+        String nombreRol = (this.rolUsuario == 1) ? "Administrador" : "Vendedor";
+        javax.swing.JLabel lblInfo = new javax.swing.JLabel("GIV-PESADOS V1.0  |  Usuario Activo: " + nombreRol);
+        lblInfo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        lblInfo.setForeground(new java.awt.Color(100, 100, 100));
+
+        // Etiqueta Derecha: Reloj en vivo
+        javax.swing.JLabel lblReloj = new javax.swing.JLabel();
+        lblReloj.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        lblReloj.setForeground(new java.awt.Color(0, 52, 89));
+
+        // Timer para actualizar el reloj cada segundo
+        new javax.swing.Timer(1000, e -> {
+            lblReloj.setText(new java.text.SimpleDateFormat("dd/MM/yyyy  hh:mm:ss a").format(new java.util.Date()));
+        }).start();
+
+        pnlStatusBar.add(lblInfo, java.awt.BorderLayout.WEST);
+        pnlStatusBar.add(lblReloj, java.awt.BorderLayout.EAST);
+
+        // Agregamos la barra a la parte inferior (SOUTH) de la ventana principal
+        this.add(pnlStatusBar, java.awt.BorderLayout.SOUTH);
+        
+        
+        // ==========================================================
+        // MEJORA UI 3: ÍCONOS DINÁMICOS EN LOS MENÚS
+        // ==========================================================
+        
+        // --- Menú Sistema ---
+        aplicarIconoAMenu(jMenuItem6, "/img/salir.png"); // Cerrar Sesión
+
+        // --- Menú Comercial ---
+        aplicarIconoAMenu(jMenuItem9, "/img/clientes.png"); // Clientes
+        aplicarIconoAMenu(jMenuItem10, "/img/ventas.png");  // Ventas
+
+        // --- Menú Mantenimiento ---
+        aplicarIconoAMenu(jMenuItem5, "/img/usuarios.png"); // Usuarios
+
+        // --- Menú Administración ---
+        aplicarIconoAMenu(jMenuItem7, "/img/categorias.png");   // Categorías
+        aplicarIconoAMenu(jMenuItem8, "/img/productos.png");    // Productos
+        aplicarIconoAMenu(jMenuItem12, "/img/estadisticas.png");// Estadísticas
+        aplicarIconoAMenu(jMenuItem11, "/img/reportes.png");    // Reportes
+        
     }
 
     /**
@@ -169,10 +249,10 @@ public class MdiPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu4.setText("administracion");
+        jMenu4.setText("Administración");
         jMenu4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jMenuItem7.setText("Categorias");
+        jMenuItem7.setText("Categorías");
         jMenuItem7.addActionListener(this::jMenuItem7ActionPerformed);
         jMenu4.add(jMenuItem7);
 
@@ -300,4 +380,29 @@ public class MdiPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JLabel lblFondoLogo;
     // End of variables declaration//GEN-END:variables
+
+
+    /**
+     * Aplica un icono redimensionado a un elemento del menu (JMenuItem o JMenu).
+     * * @param menu El componente de menu al que se le aplicara el icono.
+     * @param ruta La ruta interna del recurso dentro de la carpeta /img/
+     */
+    private void aplicarIconoAMenu(javax.swing.JMenuItem menu, String ruta) {
+        try {
+            java.net.URL url = getClass().getResource(ruta);
+            if (url != null) {
+                javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(url);
+                // Se escala a 20x20 pixeles para una optima visualizacion corporativa
+                java.awt.Image imgEscalada = iconoOriginal.getImage().getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH);
+                menu.setIcon(new javax.swing.ImageIcon(imgEscalada));
+            } else {
+                System.out.println("Advertencia de Interfaz: No se encontró el recurso gráfico en " + ruta);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al aplicar icono en el menu: " + e.getMessage());
+        }
+    }
+    
+    
+
 }

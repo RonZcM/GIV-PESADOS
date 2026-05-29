@@ -165,7 +165,6 @@ public class FrmCategorias extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
 
         panel1.setBackground(new java.awt.Color(204, 204, 204));
         panel1.setPreferredSize(new java.awt.Dimension(600, 500));
