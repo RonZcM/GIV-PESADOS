@@ -33,7 +33,38 @@ public class MdiPrincipal extends javax.swing.JFrame {
     // Modificamos el constructor para que exija el rol al abrirse
     public MdiPrincipal(int rol) {
         initComponents();
+        
+
+        jDesktopPane1.setLayout(null);
+
+        
         this.rolUsuario = rol;
+        
+        
+        // === MEJORAS VISUALES EXTRA (ÍCONO Y MENÚS) ===
+        
+        // 1. Quitar el pingüino y poner el logo oficial en la esquina de la ventana
+        try {
+            java.net.URL urlIcono = getClass().getResource("/GIV-PESADOS.png");
+            if (urlIcono != null) {
+                this.setIconImage(new javax.swing.ImageIcon(urlIcono).getImage());
+            }
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar el ícono de la ventana.");
+        }
+
+        // 2. Pintar la barra de menú (Fondo Blanco Humo)
+        jMenuBar1.setBackground(new java.awt.Color(211, 211, 211));
+        jMenuBar1.setOpaque(true); 
+        
+        // 3. Pintar las letras de los menús (Azul Marino)
+        java.awt.Color colorLetraMenu = new java.awt.Color(0, 52, 89);
+        jMenu1.setForeground(colorLetraMenu); // Mantenimiento
+        jMenu3.setForeground(colorLetraMenu); // Sistema
+        jMenu4.setForeground(colorLetraMenu); // Administracion
+        jMenu5.setForeground(colorLetraMenu); // Comercial
+        // ==============================================
+        
         
         // Esta línea hace que el MDI se abra en pantalla completa automáticamente
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); 
@@ -59,6 +90,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jDesktopPane1 = new javax.swing.JDesktopPane();
+        lblFondoLogo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -70,6 +102,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenu4 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
@@ -82,20 +115,31 @@ public class MdiPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jDesktopPane1.setBackground(new java.awt.Color(0, 52, 89));
+
+        jDesktopPane1.setLayer(lblFondoLogo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGap(76, 76, 76)
+                .addComponent(lblFondoLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(79, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 276, Short.MAX_VALUE)
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(lblFondoLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         getContentPane().add(jDesktopPane1, java.awt.BorderLayout.CENTER);
 
         jMenu3.setText("Sistema");
+        jMenu3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem6.setText("Cerrar Sesión");
         jMenuItem6.addActionListener(this::jMenuItem6ActionPerformed);
@@ -104,6 +148,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu5.setText("Comercial");
+        jMenu5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem9.setText("Clientes");
         jMenuItem9.addActionListener(this::jMenuItem9ActionPerformed);
@@ -116,6 +161,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu5);
 
         jMenu1.setText("Mantenimiento");
+        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem5.setText("Usuarios");
         jMenuItem5.addActionListener(this::jMenuItem5ActionPerformed);
@@ -124,14 +170,19 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu4.setText("administracion");
+        jMenu4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem7.setText("Categorias");
         jMenuItem7.addActionListener(this::jMenuItem7ActionPerformed);
         jMenu4.add(jMenuItem7);
 
-        jMenuItem8.setText("productos");
+        jMenuItem8.setText("Productos");
         jMenuItem8.addActionListener(this::jMenuItem8ActionPerformed);
         jMenu4.add(jMenuItem8);
+
+        jMenuItem12.setText("Estadísticas");
+        jMenuItem12.addActionListener(this::jMenuItem12ActionPerformed);
+        jMenu4.add(jMenuItem12);
 
         jMenuItem11.setText("Reportes");
         jMenuItem11.addActionListener(this::jMenuItem11ActionPerformed);
@@ -212,6 +263,14 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jDesktopPane1.add(reportes);
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        
+        FrmDashboard estadisticas = new FrmDashboard();
+        estadisticas.setVisible(true);
+        jDesktopPane1.add(estadisticas);
+        
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -230,6 +289,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -238,5 +298,6 @@ public class MdiPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JLabel lblFondoLogo;
     // End of variables declaration//GEN-END:variables
 }
