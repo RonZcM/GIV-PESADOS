@@ -1,0 +1,23 @@
+{
+  "repuestos": [
+    {
+      "idDetalle": 0,
+      "idVenta": 0,
+      "idProducto": 1,
+      "cantidad": 3,
+      "descuento": 12.0,
+      "precioUnitario": 40.0,
+      "subtotal": 108.0
+    }
+  ],
+  "cabecera": {
+    "idVenta": 27,
+    "fechaVenta": "2026-05-28 21:50:03",
+    "totalPagar": 108.0,
+    "tipoComprobante": "Ticket",
+    "metodoPago": "Efectivo ",
+    "estado": 1,
+    "idCliente": 1,
+    "idUsuario": 1
+  }
+}

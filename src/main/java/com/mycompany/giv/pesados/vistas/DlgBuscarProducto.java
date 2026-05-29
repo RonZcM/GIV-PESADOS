@@ -19,9 +19,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import java.awt.FlowLayout;
 
 import com.mycompany.giv.pesados.dao.ProductoDAO;
 import com.mycompany.giv.pesados.modelos.Producto;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 
 /**
  *
@@ -55,95 +59,192 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
         // Le metemos este panel a tu ScrollPane que creaste en el diseño
         ScrollPaneProductos.setViewportView(panelCuadricula);
         
+        // 1. Primero llenamos el ComboBox con los datos de la DB
+        cargarComboCategorias();
         // Cargamos todos los productos al iniciar (AHORA PASAMOS TEXTO VACÍO Y "Todos")
         cargarCatalogo("", "Todos");
     }
     
-    // ==============================================================
-    // MÉTODO PARA CREAR LAS TARJETAS DINÁMICAS (ACTUALIZADO)
+// ==============================================================
+    // MÉTODO PARA CREAR LAS TARJETAS DINÁMICAS (LIMPIEZA FINAL DE CARACTERES)
     // ==============================================================
     public void cargarCatalogo(String filtroBusqueda, String categoria) {
-        // 1. Limpiamos el panel por si estamos filtrando
         panelCuadricula.removeAll();
         
-        // 2. Traemos los datos de la base usando el NUEVO método del DAO
         ProductoDAO prodDao = new ProductoDAO();
         List<Producto> lista = prodDao.filtrarCatalogo(filtroBusqueda, categoria);
         
-        // 3. Recorremos cada producto de la DB
+        // Paleta de colores profesional
+        Color colFondoCard = Color.decode("#ffffff");
+        Color colBorde = Color.decode("#e2e8f0");
+        Color colFondoImagen = Color.decode("#cbd5e1");
+        Color colBadge = Color.decode("#10b981"); 
+        Color colMarca = Color.decode("#64748b"); 
+        Color colTitulo = Color.decode("#0f172a"); 
+        Color colFooter = Color.decode("#f8fafc");
+        Color colBtnBg = Color.decode("#1e293b");
+        
         for (Producto prod : lista) {
             
-            // --- CREACIÓN DE LA TARJETA (JPanel) ---
-            JPanel tarjeta = new JPanel(new BorderLayout(5, 5));
-            tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-            tarjeta.setBackground(Color.WHITE);
-            tarjeta.setPreferredSize(new Dimension(150, 200)); // Tamaño de cada cuadrito
-            tarjeta.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Manita al pasar el mouse
+            // --- 1. CONTENEDOR PRINCIPAL ---
+            JPanel tarjeta = new JPanel(new BorderLayout());
+            tarjeta.setBackground(colFondoCard);
+            tarjeta.setBorder(BorderFactory.createLineBorder(colBorde, 1, true));
+            tarjeta.setPreferredSize(new Dimension(260, 420)); 
+            tarjeta.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            // --- IMAGEN ---
+            // --- 2. IMAGEN Y ETIQUETA (DISPONIBLE) ---
+            JPanel panelImagen = new JPanel(new BorderLayout());
+            panelImagen.setBackground(colFondoImagen);
+            panelImagen.setPreferredSize(new Dimension(260, 150));
+            
+            // SIN ICONO: El color verde ya indica éxito/disponible
+            JLabel lblBadge = new JLabel(" DISPONIBLE ");
+            lblBadge.setOpaque(true);
+            lblBadge.setBackground(colBadge);
+            lblBadge.setForeground(Color.WHITE);
+            lblBadge.setFont(new Font("Segoe UI", Font.BOLD, 11));
+            lblBadge.setBorder(BorderFactory.createEmptyBorder(3, 8, 3, 8)); 
+            
+            JPanel panelBadgeContenedor = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            panelBadgeContenedor.setOpaque(false);
+            panelBadgeContenedor.add(lblBadge);
+            
             JLabel lblImagen = new JLabel("", SwingConstants.CENTER);
-            
-            // Extraemos la ruta directamente de la base de datos
             String rutaImg = prod.getRutaImagen(); 
-            
-            // Validación por si la ruta está vacía o el archivo se borró de la carpeta
             if (rutaImg == null || rutaImg.isEmpty() || !new File(rutaImg).exists()) {
                 rutaImg = "imagenes_repuestos/default.png"; 
             }
-            
             try {
-                // Ajustamos la imagen a 100x100
                 ImageIcon icono = new ImageIcon(rutaImg);
-                Image imgEscalada = icono.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                Image imgEscalada = icono.getImage().getScaledInstance(130, 130, Image.SCALE_SMOOTH);
                 lblImagen.setIcon(new ImageIcon(imgEscalada));
             } catch (Exception e) {
-                lblImagen.setText("Sin Imagen");
+                lblImagen.setText("Sin Imagen"); 
             }
-            tarjeta.add(lblImagen, BorderLayout.NORTH);
-
-            // --- TEXTOS (Nombre, Precio, Stock) ---
-            String texto = "<html><center>"
-                    + "<b>" + prod.getNombreRepuesto() + "</b><br>"
-                    + "<font color='green'>$" + String.format("%.2f", prod.getPrecioVenta()) + "</font><br>"
-                    + "<font color='gray'>Stock: " + prod.getStockActual() + "</font>"
-                    + "</center></html>";
             
-            JLabel lblDatos = new JLabel(texto, SwingConstants.CENTER);
-            lblDatos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-            tarjeta.add(lblDatos, BorderLayout.CENTER);
+            panelImagen.add(panelBadgeContenedor, BorderLayout.NORTH);
+            panelImagen.add(lblImagen, BorderLayout.CENTER);
+            tarjeta.add(panelImagen, BorderLayout.NORTH);
 
-            // --- EVENTO DE DOBLE CLIC EN LA TARJETA ---
+            // --- 3. CUERPO DE DATOS TÉCNICOS ---
+            JPanel panelCuerpo = new JPanel();
+            panelCuerpo.setLayout(new BoxLayout(panelCuerpo, BoxLayout.Y_AXIS));
+            panelCuerpo.setBackground(colFondoCard);
+            panelCuerpo.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15)); 
+            
+            // SIN ICONO: Solo el texto limpio
+            String textoMarca = prod.getMarca() != null && !prod.getMarca().isEmpty() ? prod.getMarca().toUpperCase() : "MARCA GENÉRICA";
+            JLabel lblMarca = new JLabel("MARCA: " + textoMarca);
+            lblMarca.setForeground(colMarca);
+            lblMarca.setFont(new Font("Segoe UI", Font.BOLD, 11));
+            
+            // Título (Mantenemos el cuadro pequeño que sí funcionó)
+            JLabel lblTitulo = new JLabel("▪ " + prod.getNombreRepuesto());
+            lblTitulo.setForeground(colTitulo);
+            lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            
+            // Descripción (Mantenemos el lápiz que sí funcionó)
+            String desc = prod.getDescripcion() != null && !prod.getDescripcion().isEmpty() ? prod.getDescripcion() : "Sin descripción adicional.";
+            if (desc.length() > 50) {
+                desc = desc.substring(0, 47) + "...";
+            }
+            JLabel lblDesc = new JLabel("<html><p style='width:200px; color:#64748b; font-size:9px; font-style:italic;'>✎ " + desc + "</p></html>");
+            
+            // Añadimos los primeros textos
+            panelCuerpo.add(lblMarca);
+            panelCuerpo.add(Box.createRigidArea(new Dimension(0, 3)));
+            panelCuerpo.add(lblTitulo);
+            panelCuerpo.add(Box.createRigidArea(new Dimension(0, 5)));
+            panelCuerpo.add(lblDesc);
+            panelCuerpo.add(Box.createRigidArea(new Dimension(0, 15)));
+            
+            // Cuadrícula de Especificaciones (Mantenemos los que sí funcionaron)
+            JPanel panelSpecs = new JPanel(new GridLayout(2, 2, 5, 8)); 
+            panelSpecs.setBackground(colFondoCard);
+            
+            String numSerie = prod.getNumSerie() != null ? prod.getNumSerie() : "N/A";
+            String htmlSerie = "<html><font color='#475569' size='3'># Serie:<br><b>" + numSerie + "</b></font></html>";
+            String htmlPrecio = "<html><font color='#475569' size='3'>$ Precio:<br><b>$" + String.format("%.2f", prod.getPrecioVenta()) + "</b></font></html>";
+            String htmlStockA = "<html><font color='#475569' size='3'>≡ Stock:<br><b>" + prod.getStockActual() + " un.</b></font></html>";
+            
+            panelSpecs.add(new JLabel(htmlSerie));
+            panelSpecs.add(new JLabel(htmlPrecio));
+            panelSpecs.add(new JLabel(htmlStockA));
+            panelSpecs.add(new JLabel("")); 
+            
+            panelCuerpo.add(panelSpecs);
+            tarjeta.add(panelCuerpo, BorderLayout.CENTER);
+
+            // --- 4. PIE DE LA TARJETA Y BOTÓN ---
+            JPanel panelFooter = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
+            panelFooter.setBackground(colFooter);
+            panelFooter.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, colBorde));
+            
+            // SIN ICONO: Botón limpio
+            JButton btnSeleccionar = new JButton("Seleccionar Equipo");
+            btnSeleccionar.setPreferredSize(new Dimension(220, 35));
+            btnSeleccionar.setBackground(colBtnBg);
+            btnSeleccionar.setForeground(Color.WHITE);
+            btnSeleccionar.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            btnSeleccionar.setFocusPainted(false);
+            btnSeleccionar.setBorderPainted(false);
+            btnSeleccionar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            
+            // Eventos del Botón y Tarjeta
+            btnSeleccionar.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    idSeleccionado = prod.getIdProducto();
+                    nombreSeleccionado = prod.getNombreRepuesto();
+                    precioSeleccionado = prod.getPrecioVenta();
+                    stockSeleccionado = prod.getStockActual();
+                    dispose(); 
+                }
+            });
+
             tarjeta.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent evt) {
-                    if (evt.getClickCount() == 2) { // Doble clic
-                        // Guardamos los datos en las variables globales
-                        idSeleccionado = prod.getIdProducto();
-                        nombreSeleccionado = prod.getNombreRepuesto();
-                        precioSeleccionado = prod.getPrecioVenta();
-                        stockSeleccionado = prod.getStockActual();
-                        
-                        // Cerramos el JDialog
-                        dispose(); 
+                    if (evt.getClickCount() == 2) {
+                        btnSeleccionar.doClick(); 
                     }
                 }
-                
-                // Efecto hover (cambiar color al pasar el ratón)
                 @Override
-                public void mouseEntered(MouseEvent e) { tarjeta.setBackground(new Color(240, 248, 255)); }
+                public void mouseEntered(MouseEvent e) { 
+                    tarjeta.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+                }
                 @Override
-                public void mouseExited(MouseEvent e) { tarjeta.setBackground(Color.WHITE); }
+                public void mouseExited(MouseEvent e) { 
+                    tarjeta.setBorder(BorderFactory.createLineBorder(colBorde, 1, true));
+                }
             });
 
-            // Agregamos la tarjeta terminada a la cuadrícula
+            panelFooter.add(btnSeleccionar);
+            tarjeta.add(panelFooter, BorderLayout.SOUTH);
+
+            // Se agrega al panel principal
             panelCuadricula.add(tarjeta);
         }
         
-        // 4. Refrescamos la pantalla para que se dibujen los componentes nuevos
         panelCuadricula.revalidate();
         panelCuadricula.repaint();
     }
-
+    // ==============================================================
+    // MÉTODO PARA LLENAR EL COMBOBOX DINÁMICAMENTE
+    // ==============================================================
+    private void cargarComboCategorias() {
+        // 1. Limpiamos cualquier texto basura que tenga el ComboBox desde NetBeans
+        CbCategorias.removeAllItems();
+        
+        // 2. Llamamos al DAO para traer la lista de la Base de Datos
+        com.mycompany.giv.pesados.dao.CategoriaDAO catDao = new com.mycompany.giv.pesados.dao.CategoriaDAO();
+        List<String> categoriasDB = catDao.obtenerNombresCategorias();
+        
+        // 3. Recorremos la lista y metemos cada palabra en el ComboBox
+        for (String categoria : categoriasDB) {
+            CbCategorias.addItem(categoria);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -167,16 +268,31 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(0, 52, 89));
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Filtros y Búsqueda");
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("Gestione y filtre el inventario");
 
-        jLabel3.setText("Nombre o Codigo:");
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Nombre o Código:");
 
+        TxtBuscar.setForeground(new java.awt.Color(0, 0, 0));
+
+        BtnBuscar.setBackground(new java.awt.Color(0, 180, 216));
+        BtnBuscar.setForeground(new java.awt.Color(255, 255, 255));
         BtnBuscar.setText("Buscar");
+        BtnBuscar.setContentAreaFilled(false);
+        BtnBuscar.setOpaque(true);
         BtnBuscar.addActionListener(this::BtnBuscarActionPerformed);
 
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Categorias:");
 
+        CbCategorias.setForeground(new java.awt.Color(0, 0, 0));
         CbCategorias.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Autobuses", "Rastras" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -194,8 +310,8 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(CbCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                        .addComponent(BtnBuscar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
+                        .addComponent(BtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(17, 17, 17))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -204,9 +320,9 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(16, 16, 16)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -217,8 +333,13 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel2.setText("Catalogo de Productos");
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Catálogo de Productos");
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        jPanel3.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -226,14 +347,15 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(ScrollPaneProductos, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(ScrollPaneProductos)
+                .addGap(14, 14, 14))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ScrollPaneProductos, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
+                .addComponent(ScrollPaneProductos, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -241,17 +363,15 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(309, 309, 309)
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(299, 299, 299))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -260,9 +380,9 @@ public class DlgBuscarProducto extends javax.swing.JDialog {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

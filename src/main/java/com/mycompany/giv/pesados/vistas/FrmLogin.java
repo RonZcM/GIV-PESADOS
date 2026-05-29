@@ -21,28 +21,50 @@ public class FrmLogin extends javax.swing.JFrame {
     public FrmLogin() {
         initComponents();
         
+        // 1. Ajustar el Logo (Asegúrate de que la ruta sea correcta)
+        ajustarImagen(LbLogo, "/GIV-PESADOS.png");
         
-        // Cargar el logo por código desde la carpeta resources de Maven
-        try {
-            java.net.URL urlLogo = getClass().getResource("/GIV-PESADOS.png");
-            
-            if (urlLogo != null) {
-                javax.swing.ImageIcon iconoLogo = new javax.swing.ImageIcon(urlLogo);
-                
-                // Le damos un tamaño ideal para el Login (ejemplo: 150 de ancho por 150 de alto)
-                // Nota: Si tu label se llama diferente a 'lblLogo', cambialo aquí abajo
-                java.awt.Image imgEscalada = iconoLogo.getImage().getScaledInstance(200, 120, java.awt.Image.SCALE_SMOOTH);
-                
-                jLabel4.setIcon(new javax.swing.ImageIcon(imgEscalada));
-            } else {
-                System.out.println("No se encontró la imagen del logo en las resources del Login.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error cargando el logo en el Login: " + e.getMessage());
-        }
+        // 2. Ajustar el Fondo (Sobrescribe la imagen que pone NetBeans para que encaje perfecto)
+        ajustarImagen(LbFondo, "/fondo.jpg");
         
         
     }
+    /**
+     * Método auxiliar para ajustar cualquier imagen al tamaño de un JLabel
+     */
+  private void ajustarImagen(javax.swing.JLabel label, String ruta) {
+    System.out.println("--- Intentando cargar: " + ruta + " ---");
+    try {
+        java.net.URL url = getClass().getResource(ruta);
+        if (url != null) {
+            System.out.println("1. ¡Imagen ENCONTRADA en la carpeta resources!");
+            javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(url);
+            
+            int ancho = label.getWidth();
+            int alto = label.getHeight();
+            System.out.println("2. Tamaño inicial - Ancho: " + ancho + ", Alto: " + alto);
+            
+            if (ancho == 0 || alto == 0) {
+                ancho = label.getPreferredSize().width;
+                alto = label.getPreferredSize().height;
+                System.out.println("3. Usando tamaño de diseño (PreferredSize) - Ancho: " + ancho + ", Alto: " + alto);
+            }
+            
+            if (ancho > 0 && alto > 0) {
+                java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(ancho, alto, java.awt.Image.SCALE_SMOOTH);
+                label.setIcon(new javax.swing.ImageIcon(imagenEscalada));
+                System.out.println("4. ¡Imagen ESCALADA y ASIGNADA al JLabel con éxito!");
+            } else {
+                System.out.println("ERROR: El tamaño del JLabel sigue siendo 0. La imagen no se puede dibujar.");
+            }
+        } else {
+            System.out.println("ERROR FATAL: Java no encuentra el archivo en esa ruta.");
+        }
+    } catch (Exception e) {
+        System.out.println("Excepción detectada: " + e.getMessage());
+    }
+    System.out.println("----------------------------------------");
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -60,81 +82,59 @@ public class FrmLogin extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtClave = new javax.swing.JPasswordField();
         btnIngresar = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
+        LbLogo = new javax.swing.JLabel();
+        LbFondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Inicio de Sesión");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, -1, -1));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Usuario:");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, -1, -1));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtUsuario.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel1.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 210, 298, -1));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Contraseña:");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 270, -1, -1));
 
+        txtClave.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel1.add(txtClave, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 270, 298, -1));
+
+        btnIngresar.setBackground(new java.awt.Color(42, 157, 143));
+        btnIngresar.setForeground(new java.awt.Color(0, 0, 0));
         btnIngresar.setText("Ingresar");
+        btnIngresar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnIngresar.setContentAreaFilled(false);
+        btnIngresar.setOpaque(true);
         btnIngresar.addActionListener(this::btnIngresarActionPerformed);
+        jPanel1.add(btnIngresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 330, 147, 58));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(261, 261, 261)
-                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(129, 129, 129)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel2))
-                                .addGap(29, 29, 29)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtUsuario)
-                                    .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1))
-                                .addGap(100, 100, 100)))))
-                .addContainerGap(144, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addGap(34, 34, 34)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(66, 66, 66)
-                .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(57, 57, 57))
-        );
+        LbLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel1.add(LbLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 210, 360, 280));
+
+        LbFondo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel1.add(LbFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 0, 320, 500));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -230,11 +230,12 @@ public class FrmLogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel LbFondo;
+    private javax.swing.JLabel LbLogo;
     private javax.swing.JButton btnIngresar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField txtClave;
     private javax.swing.JTextField txtUsuario;
