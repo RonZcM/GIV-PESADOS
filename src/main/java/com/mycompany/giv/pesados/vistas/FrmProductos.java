@@ -42,6 +42,111 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         
         cargarCategorias();
         cargarTabla();
+        // ==========================================
+    // 1. FONDOS, BANNER Y TARJETAS
+    // ==========================================
+    // Fondo general de la ventana
+    panel2.setBackground(com.mycompany.giv.pesados.config.EstiloUI.FONDO_APP);
+    
+    // Banner superior oscuro
+    if (banner1 != null) {
+        banner1.setBackground(com.mycompany.giv.pesados.config.EstiloUI.AZUL_OSCURO);
+    }
+    
+    // Tarjeta blanca para el formulario
+    if (panelTarjeta != null) {
+        panelTarjeta.setBackground(com.mycompany.giv.pesados.config.EstiloUI.FONDO_TARJETA);
+        panelTarjeta.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(229, 231, 235), 1, true));
+    }
+    
+    if (titulo1 != null) {
+        titulo1.setForeground(java.awt.Color.WHITE);
+        titulo1.setFont(com.mycompany.giv.pesados.config.EstiloUI.FUENTE_TITULO);
+    }
+
+    // ==========================================
+    // 2. BOTONES
+    // ==========================================
+    com.mycompany.giv.pesados.config.EstiloUI.aplicarEstiloBoton(btnGuardar, com.mycompany.giv.pesados.config.EstiloUI.BTN_GUARDAR);
+    com.mycompany.giv.pesados.config.EstiloUI.aplicarEstiloBoton(btnActualizar, com.mycompany.giv.pesados.config.EstiloUI.BTN_ACTUALIZAR);
+    com.mycompany.giv.pesados.config.EstiloUI.aplicarEstiloBoton(btnEliminar, com.mycompany.giv.pesados.config.EstiloUI.BTN_ELIMINAR);
+    com.mycompany.giv.pesados.config.EstiloUI.aplicarEstiloBoton(btnLimpiar, com.mycompany.giv.pesados.config.EstiloUI.AZUL_OSCURO);
+    com.mycompany.giv.pesados.config.EstiloUI.aplicarEstiloBoton(btnSeleccion, com.mycompany.giv.pesados.config.EstiloUI.AZUL_OSCURO);
+
+    // ==========================================
+    // 3. ETIQUETAS (LABELS)
+    // ==========================================
+    javax.swing.JLabel[] etiquetas = {jLabel1, jLabel2, jLabel3, jLabel4, jLabel5, jLabel6, jLabel7, jLabel8, jLabel9};
+    for (javax.swing.JLabel l : etiquetas) {
+        if (l != null) {
+            l.setFont(com.mycompany.giv.pesados.config.EstiloUI.FUENTE_GENERAL);
+            l.setForeground(com.mycompany.giv.pesados.config.EstiloUI.TEXTO_PRINCIPAL);
+        }
+    }
+
+    // ==========================================
+    // 4. CAMPOS DE TEXTO, ÁREAS Y LISTAS
+    // ==========================================
+    javax.swing.JComponent[] campos = {
+        txtBuscar, txtNombreRepuesto, txtNumSerie, txtMarca, 
+        txtPrecioVenta, txtStockActual, txtStockMinimo, txtImage, 
+        txaDescripcion, lstCategorias
+    };
+    for (javax.swing.JComponent c : campos) {
+        if (c != null) {
+            com.mycompany.giv.pesados.config.EstiloUI.aplicarEstiloCampo(c);
+        }
+    }
+
+    // Limpiar los bordes de los JScrollPanes internos para evitar bordes dobles (aplica a la lista y al área de texto)
+    if (jScrollPane1 != null) jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+    if (jScrollPane3 != null) jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
+    // Color de selección para la lista
+    if (lstCategorias != null) {
+        lstCategorias.setSelectionBackground(com.mycompany.giv.pesados.config.EstiloUI.BTN_ACTUALIZAR);
+        lstCategorias.setSelectionForeground(java.awt.Color.WHITE);
+    }
+
+    // Borde sutil para el contenedor de la imagen
+    if (lblImage != null) {
+        lblImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(229, 231, 235), 1, true));
+    }
+
+    // ==========================================
+    // 5. ESTILO CARD BLANCO PARA LA TABLA Y SU SCROLL
+    // ==========================================
+    if (jScrollPane2 != null) {
+        jScrollPane2.setBackground(com.mycompany.giv.pesados.config.EstiloUI.FONDO_TARJETA);
+        jScrollPane2.getViewport().setBackground(com.mycompany.giv.pesados.config.EstiloUI.FONDO_TARJETA);
+        // Borde redondeado y un poco de padding interno
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(229, 231, 235), 1, true),
+            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+    }
+
+    // ==========================================
+    // 6. DISEÑO DE LA TABLA
+    // ==========================================
+    if (tblProductos != null) {
+        tblProductos.setRowHeight(35); 
+        tblProductos.setShowVerticalLines(false);
+        tblProductos.setShowHorizontalLines(true);
+        tblProductos.setGridColor(new java.awt.Color(229, 231, 235));
+        
+        tblProductos.setSelectionBackground(com.mycompany.giv.pesados.config.EstiloUI.BTN_ACTUALIZAR);
+        tblProductos.setSelectionForeground(java.awt.Color.WHITE);
+        tblProductos.setFont(com.mycompany.giv.pesados.config.EstiloUI.FUENTE_GENERAL);
+        
+        // Cabecera oscura
+        tblProductos.getTableHeader().setBackground(com.mycompany.giv.pesados.config.EstiloUI.AZUL_OSCURO);
+        tblProductos.getTableHeader().setForeground(java.awt.Color.WHITE);
+        tblProductos.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        tblProductos.getTableHeader().setOpaque(false);
+    }
+  
+
     }
     
     private void mostrarImagen(String ruta) {
@@ -125,15 +230,27 @@ public class FrmProductos extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         panel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        txtBuscar = new javax.swing.JTextField();
+        btnGuardar = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblProductos = new javax.swing.JTable();
+        banner1 = new javax.swing.JPanel();
+        titulo1 = new javax.swing.JLabel();
+        panelTarjeta = new javax.swing.JPanel();
+        txtNombreRepuesto = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         txtNumSerie = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         txtMarca = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txaDescripcion = new javax.swing.JTextArea();
+        txtBuscar = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         txtPrecioVenta = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtStockActual = new javax.swing.JTextField();
@@ -141,18 +258,9 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         txtStockMinimo = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstCategorias = new javax.swing.JList<>();
-        btnGuardar = new javax.swing.JButton();
-        btnActualizar = new javax.swing.JButton();
-        btnEliminar = new javax.swing.JButton();
-        btnLimpiar = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblProductos = new javax.swing.JTable();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        txaDescripcion = new javax.swing.JTextArea();
-        txtNombreRepuesto = new javax.swing.JTextField();
         txtImage = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         btnSeleccion = new javax.swing.JButton();
-        jLabel9 = new javax.swing.JLabel();
         lblImage = new javax.swing.JLabel();
 
         setClosable(true);
@@ -162,70 +270,21 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         panel2.setBackground(new java.awt.Color(204, 204, 204));
         panel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Buscar:");
-        panel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, -1, -1));
-
-        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtBuscarKeyReleased(evt);
-            }
-        });
-        panel2.add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 20, 190, -1));
-
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Nombre del Repuesto:");
-        panel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
-
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Número de serie:");
-        panel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
-        panel2.add(txtNumSerie, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, 170, -1));
-
-        jLabel4.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("marca:");
-        panel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, -1, -1));
-        panel2.add(txtMarca, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 150, 100, -1));
-
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Descripción:");
-        panel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, -1, -1));
-
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel6.setText("Imagen:");
-        panel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, -1, -1));
-        panel2.add(txtPrecioVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 20, 90, -1));
-
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel7.setText("Stock actual:");
-        panel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 60, -1, -1));
-        panel2.add(txtStockActual, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, 90, -1));
-
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Stock mínimo:");
-        panel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 100, -1, 20));
-        panel2.add(txtStockMinimo, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 100, 90, -1));
-
-        jScrollPane1.setViewportView(lstCategorias);
-
-        panel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 150, 170, -1));
-
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(this::btnGuardarActionPerformed);
-        panel2.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
+        panel2.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 410, -1, -1));
 
         btnActualizar.setText("Actualizar");
         btnActualizar.addActionListener(this::btnActualizarActionPerformed);
-        panel2.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 300, -1, -1));
+        panel2.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 420, -1, -1));
 
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(this::btnEliminarActionPerformed);
-        panel2.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 300, -1, -1));
+        panel2.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 420, -1, -1));
 
         btnLimpiar.setText("limpiar");
         btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
-        panel2.add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 300, -1, -1));
+        panel2.add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 430, -1, -1));
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -245,37 +304,211 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblProductos);
 
-        panel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 810, 220));
+        panel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 470, 790, 180));
+
+        titulo1.setBackground(new java.awt.Color(255, 255, 255));
+        titulo1.setFont(new java.awt.Font("sansserif", 0, 48)); // NOI18N
+        titulo1.setText("Gestion de productos");
+
+        javax.swing.GroupLayout banner1Layout = new javax.swing.GroupLayout(banner1);
+        banner1.setLayout(banner1Layout);
+        banner1Layout.setHorizontalGroup(
+            banner1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(banner1Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(titulo1)
+                .addContainerGap(552, Short.MAX_VALUE))
+        );
+        banner1Layout.setVerticalGroup(
+            banner1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(banner1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(titulo1)
+                .addContainerGap(7, Short.MAX_VALUE))
+        );
+
+        panel2.add(banner1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1110, 70));
+
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setText("Nombre del Repuesto:");
+
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Número de serie:");
+
+        jLabel4.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("marca:");
 
         txaDescripcion.setColumns(20);
         txaDescripcion.setRows(5);
         jScrollPane3.setViewportView(txaDescripcion);
 
-        panel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, 190, 90));
-        panel2.add(txtNombreRepuesto, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 170, -1));
-        panel2.add(txtImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 40, 150, -1));
+        txtBuscar.addActionListener(this::txtBuscarActionPerformed);
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
 
-        btnSeleccion.setText("Seleccionar...");
-        btnSeleccion.addActionListener(this::btnSeleccionActionPerformed);
-        panel2.add(btnSeleccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 40, -1, -1));
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("Buscar:");
+
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("Descripción:");
 
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Precio venta:");
-        panel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
+
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setText("Stock actual:");
+
+        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel8.setText("Stock mínimo:");
+
+        jScrollPane1.setViewportView(lstCategorias);
+
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel6.setText("Imagen:");
+
+        btnSeleccion.setText("Seleccionar...");
+        btnSeleccion.addActionListener(this::btnSeleccionActionPerformed);
 
         lblImage.setForeground(new java.awt.Color(0, 0, 0));
         lblImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/default.jpg"))); // NOI18N
-        panel2.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 100, 260, 190));
+
+        javax.swing.GroupLayout panelTarjetaLayout = new javax.swing.GroupLayout(panelTarjeta);
+        panelTarjeta.setLayout(panelTarjetaLayout);
+        panelTarjetaLayout.setHorizontalGroup(
+            panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelTarjetaLayout.createSequentialGroup()
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelTarjetaLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(62, 62, 62)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelTarjetaLayout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelTarjetaLayout.createSequentialGroup()
+                        .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelTarjetaLayout.createSequentialGroup()
+                                .addGap(38, 38, 38)
+                                .addComponent(jLabel2))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTarjetaLayout.createSequentialGroup()
+                                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(panelTarjetaLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(jLabel3))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelTarjetaLayout.createSequentialGroup()
+                                        .addGap(62, 62, 62)
+                                        .addComponent(jLabel4)))
+                                .addGap(28, 28, 28)))
+                        .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelTarjetaLayout.createSequentialGroup()
+                                .addGap(32, 32, 32)
+                                .addComponent(txtNombreRepuesto, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtNumSerie, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtMarca, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelTarjetaLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                        .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(panelTarjetaLayout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelTarjetaLayout.createSequentialGroup()
+                                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtStockActual, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtStockMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel6))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelTarjetaLayout.createSequentialGroup()
+                        .addGap(110, 110, 110)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTarjetaLayout.createSequentialGroup()
+                        .addComponent(txtImage, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSeleccion))
+                    .addComponent(lblImage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(33, 33, 33))
+        );
+        panelTarjetaLayout.setVerticalGroup(
+            panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelTarjetaLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtImage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(btnSeleccion))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblImage, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTarjetaLayout.createSequentialGroup()
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelTarjetaLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTarjetaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel2)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtStockActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)))
+                    .addComponent(txtNombreRepuesto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtStockMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNumSerie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelTarjetaLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(panelTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTarjetaLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)))
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        panel2.add(panelTarjeta, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 1080, 330));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel2, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE)
+            .addComponent(panel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1112, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, 683, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -408,6 +641,10 @@ public class FrmProductos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnSeleccionActionPerformed
 
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
+
 private void limpiarCampos() {
         txtNombreRepuesto.setText("");
         txtNumSerie.setText("");
@@ -487,6 +724,7 @@ private boolean validarCampos() {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel banner1;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
@@ -507,7 +745,9 @@ private boolean validarCampos() {
     private javax.swing.JLabel lblImage;
     private javax.swing.JList<Categoria> lstCategorias;
     private javax.swing.JPanel panel2;
+    private javax.swing.JPanel panelTarjeta;
     private javax.swing.JTable tblProductos;
+    private javax.swing.JLabel titulo1;
     private javax.swing.JTextArea txaDescripcion;
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtImage;

@@ -96,4 +96,25 @@ public class CategoriaDAO {
         }
         return ids;
     }
+    
+    // 6. MÉTODO PARA VERIFICAR SI EL NOMBRE YA EXISTE
+    public boolean existeCategoria(String nombre, int idIgnorar) {
+        // Si idIgnorar es 0, es un registro nuevo. Si es > 0, estamos editando.
+        String sql = "SELECT COUNT(*) FROM CATEGORIAS WHERE nombre_categoria = ? AND id_categoria != ? AND estado = 1";
+        Connection con = Conexion.getInstancia().conectar();
+        
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, nombre);
+            pst.setInt(2, idIgnorar);
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Devuelve true si existe
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al verificar existencia: " + e.getMessage());
+        }
+        return false;
+    }
 }
