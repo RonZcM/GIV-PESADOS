@@ -33,7 +33,69 @@ public class MdiPrincipal extends javax.swing.JFrame {
     // Modificamos el constructor para que exija el rol al abrirse
     public MdiPrincipal(int rol) {
         initComponents();
+        
+        // Cargar el logo como marca de agua en el centro del MDI
+        try {
+            java.net.URL urlLogo = getClass().getResource("/GIV-PESADOS.png");
+            if (urlLogo != null) {
+                javax.swing.ImageIcon iconoLogo = new javax.swing.ImageIcon(urlLogo);
+                
+                // Medidas grandes para el MDI (ej. 400x400)
+                java.awt.Image imgEscalada = iconoLogo.getImage().getScaledInstance(600, 600, java.awt.Image.SCALE_SMOOTH);
+                
+                lblFondoLogo.setIcon(new javax.swing.ImageIcon(imgEscalada));
+            }
+        } catch (Exception e) {
+            System.out.println("Error cargando logo en el MDI: " + e.getMessage());
+        }
+        
+        
+        // === CÓDIGO PARA CENTRAR EL LOGO PERFECTAMENTE ===
+        // 1. Destruimos los resortes invisibles que le pone NetBeans al fondo
+        jDesktopPane1.setLayout(null);
+        
+        // 2. Le decimos al label que mida exactamente lo mismo que el logo (400x400)
+        lblFondoLogo.setSize(600, 600);
+        
+        // 3. Le enseñamos a la ventana a calcular el centro automáticamente si se estira o encoje
+        jDesktopPane1.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                int centroX = (jDesktopPane1.getWidth() - lblFondoLogo.getWidth()) / 2;
+                int centroY = (jDesktopPane1.getHeight() - lblFondoLogo.getHeight()) / 2;
+                lblFondoLogo.setLocation(centroX, centroY);
+            }
+        });
+        // =================================================
+        
+        
         this.rolUsuario = rol;
+        
+        
+        // === MEJORAS VISUALES EXTRA (ÍCONO Y MENÚS) ===
+        
+        // 1. Quitar el pingüino y poner el logo oficial en la esquina de la ventana
+        try {
+            java.net.URL urlIcono = getClass().getResource("/GIV-PESADOS.png");
+            if (urlIcono != null) {
+                this.setIconImage(new javax.swing.ImageIcon(urlIcono).getImage());
+            }
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar el ícono de la ventana.");
+        }
+
+        // 2. Pintar la barra de menú (Fondo Blanco Humo)
+        jMenuBar1.setBackground(new java.awt.Color(211, 211, 211));
+        jMenuBar1.setOpaque(true); 
+        
+        // 3. Pintar las letras de los menús (Azul Marino)
+        java.awt.Color colorLetraMenu = new java.awt.Color(0, 52, 89);
+        jMenu1.setForeground(colorLetraMenu); // Mantenimiento
+        jMenu3.setForeground(colorLetraMenu); // Sistema
+        jMenu4.setForeground(colorLetraMenu); // Administracion
+        jMenu5.setForeground(colorLetraMenu); // Comercial
+        // ==============================================
+        
         
         // Esta línea hace que el MDI se abra en pantalla completa automáticamente
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); 
@@ -59,6 +121,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jDesktopPane1 = new javax.swing.JDesktopPane();
+        lblFondoLogo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -81,20 +144,31 @@ public class MdiPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jDesktopPane1.setBackground(new java.awt.Color(0, 52, 89));
+
+        jDesktopPane1.setLayer(lblFondoLogo, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGap(76, 76, 76)
+                .addComponent(lblFondoLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(79, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 276, Short.MAX_VALUE)
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(lblFondoLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         getContentPane().add(jDesktopPane1, java.awt.BorderLayout.CENTER);
 
         jMenu3.setText("Sistema");
+        jMenu3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem6.setText("Cerrar Sesión");
         jMenuItem6.addActionListener(this::jMenuItem6ActionPerformed);
@@ -103,6 +177,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu5.setText("Comercial");
+        jMenu5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem9.setText("Clientes");
         jMenuItem9.addActionListener(this::jMenuItem9ActionPerformed);
@@ -115,6 +190,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu5);
 
         jMenu1.setText("Mantenimiento");
+        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem5.setText("Usuarios");
         jMenuItem5.addActionListener(this::jMenuItem5ActionPerformed);
@@ -123,6 +199,7 @@ public class MdiPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu4.setText("administracion");
+        jMenu4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem7.setText("Categorias");
         jMenuItem7.addActionListener(this::jMenuItem7ActionPerformed);
@@ -225,5 +302,6 @@ public class MdiPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JLabel lblFondoLogo;
     // End of variables declaration//GEN-END:variables
 }
